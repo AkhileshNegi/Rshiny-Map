@@ -37,4 +37,6 @@ coords.map <- coords.map + scale_fill_gradientn(colours = rev(brewer.pal(7, "Spe
 coords.map <- coords.map + geom_point(data = coords.data, aes(x = long, y = lat), fill = "red", shape = 23, alpha = 0.8)
 
 coords.map <- coords.map + theme_bw()
+# Display the plot
+# print(coords.map)
 ggsave(filename = "./coords.png")
