@@ -12,10 +12,10 @@ head(world.cities)
 ui <- fluidPage(
   titlePanel("My first shiny app"),
   leafletOutput("mymap"),
-  fluidRow(
-    column(2,
-      sliderInput("slider1"), h3("Select the Population"),
-      min = 0, max = 1000000, value = 1000000
+  fluidRow(column(
+    2,
+    sliderInput("slider1", "Select the Population",
+      min = 0, max = 1000000, value = 100000
     ),
     radioButtons("radio", h3("Select the country"),
       choices = list(
@@ -23,7 +23,7 @@ ui <- fluidPage(
         "Belgium" = "Belgium"
       ), selected = "Poland"
     )
-  )
+  ))
 )
 server <- function(input, output, session) {
   output$mymap <- renderLeaflet({
