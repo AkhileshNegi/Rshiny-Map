@@ -1,0 +1,30 @@
+
+library(maps)
+library(leaflet)
+library(dplyr)
+library(shiny)
+
+
+data(world.cities)
+world.cities
+head(world.cities)
+
+ui <- fluidPage(
+    titlePanel("My first shiny app"),
+    leafletOutput("mymap"),
+    sliderInput("slider1", "Select the Population", min = 0, max = 1000000, value = 100000)
+)
+server <- function(input, output, session) {
+    output$mymap <- renderLeaflet({
+        leaflet(world.cities %>%
+            dplyr::filter(
+                country.etc == "Poland",
+                pop > input$slider1
+            )) %>%
+            addTiles() %>%
+            addMarkers(lat = ~lat, lng = ~long)
+    })
+}
+
+
+shinyApp(ui, server)
