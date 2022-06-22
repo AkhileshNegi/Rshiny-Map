@@ -10,29 +10,35 @@ con <- dbConnect(
   dataset = "917302307943",
   billing = "tides-saas-309509"
 )
-sql = "SELECT contact_name as name, contact_phone, id as pop, CAST(latitude AS FLOAT64) as lat, CAST(longitude AS FLOAT64) as long, '0' as capital  FROM `tides-saas-309509.917302307943.messages` where longitude is not null"
+sql <- "SELECT contact_name as name, contact_phone, flow_name, CAST(latitude AS FLOAT64) as lat, CAST(longitude AS FLOAT64) as long, '0' as capital  FROM `tides-saas-309509.917302307943.messages` where longitude is not null"
 ds <- bq_dataset("tides-saas-309509", "contacts")
 tb <- bq_dataset_query(ds,
-                       query = sql,
-                       billing = "tides-saas-309509"
+  query = sql,
+  billing = "tides-saas-309509"
 )
-bark = bq_table_download(tb)
+bqdata <- bq_table_download(tb)
 
 ui <- fluidPage(
   titlePanel("My first R shiny app"),
-  leafletOutput("mymap")
+  leafletOutput("mymap"),
+  radioButtons("radio", h3("Select the Flow name"),
+    choices = list(
+      "Glific" = "Glific", "testcontact" = "testcontact",
+      "locationtrial" = "locationtrial"
+    ), selected = "Glific"
+  )
 )
 
 server <- function(input, output, session) {
   output$mymap <- renderLeaflet({
-    leaflet(bark %>%
-              dplyr::filter(
-              )) %>%
-    addTiles() %>%
-   addMarkers(lat = ~lat, lng= ~long)
+    leaflet(bqdata %>%
+      dplyr::filter(
+        flow_name == input$radio
+      )) %>%
+      addTiles() %>%
+      addMarkers(lat = ~lat, lng = ~long)
   })
 }
 
 
 shinyApp(ui, server)
-
