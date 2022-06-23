@@ -37,7 +37,7 @@ server <- function(input, output, session) {
                 flow_name == input$radio
               )) %>%
       addTiles() %>%
-      addMarkers(lat = ~lat, lng = ~long, popup = paste0("<h4>", bqdata$flow_name,"</h4>", "<img src = ", bqdata$image,' width="55"', ">"))
+      addMarkers(lat = ~lat, lng = ~long, popup = paste0("<h6>", bqdata$flow_name,"</h6>", "<img src = ", bqdata$image,' width="95"', ">"))
   })
 }
 
