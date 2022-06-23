@@ -15,8 +15,8 @@ con <- dbConnect(
 sql <- "SELECT *  FROM `tides-saas-309509.917302307943.mapping`"
 ds <- bq_dataset("tides-saas-309509", "mapping")
 tb <- bq_dataset_query(ds,
-                       query = sql,
-                       billing = "tides-saas-309509"
+  query = sql,
+  billing = "tides-saas-309509"
 )
 bqdata <- bq_table_download(tb)
 
@@ -24,24 +24,22 @@ ui <- fluidPage(
   titlePanel("Glific Mapping"),
   leafletOutput("mymap"),
   radioButtons("radio", h3("Select the Flow name"),
-               choices = list(
-                 "Pothole" = "Pothole", "Tree Cover" = "Tree Cover"
-               ), selected = "Pothole"
+    choices = list(
+      "Pothole" = "Pothole", "Tree Cover" = "Tree Cover"
+    ), selected = "Pothole"
   )
 )
 
 server <- function(input, output, session) {
   output$mymap <- renderLeaflet({
     leaflet(bqdata %>%
-              dplyr::filter(
-                flow_name == input$radio
-              )) %>%
+      dplyr::filter(
+        flow_name == input$radio
+      )) %>%
       addTiles() %>%
-      addMarkers(lat = ~lat, lng = ~long, popup = paste0("<h6>", bqdata$flow_name,"</h6>", "<img src = ", bqdata$image,' width="95"', ">"))
+      addMarkers(lat = ~lat, lng = ~long, popup = paste0("<h6>", bqdata$flow_name, "</h6>", "<img src = ", bqdata$image, ' width="95"', ">"))
   })
 }
 
 
 shinyApp(ui, server)
-
-
