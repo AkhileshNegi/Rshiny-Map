@@ -1,0 +1,47 @@
+
+library(maps)
+library(sf)
+library(leaflet)
+library(dplyr)
+library(shiny)
+library(bigrquery)
+
+con <- dbConnect(
+  bigrquery::bigquery(),
+  project = "tides-saas-309509",
+  dataset = "917302307943",
+  billing = "tides-saas-309509"
+)
+sql <- "SELECT *  FROM `tides-saas-309509.917302307943.mapping`"
+ds <- bq_dataset("tides-saas-309509", "mapping")
+tb <- bq_dataset_query(ds,
+                       query = sql,
+                       billing = "tides-saas-309509"
+)
+bqdata <- bq_table_download(tb)
+
+ui <- fluidPage(
+  titlePanel("My first R shiny app"),
+  leafletOutput("mymap"),
+  radioButtons("radio", h3("Select the Flow name"),
+               choices = list(
+                 "Pothole" = "Pothole", "Tree Cover" = "Tree Cover"
+               ), selected = "Pothole"
+  )
+)
+
+server <- function(input, output, session) {
+  output$mymap <- renderLeaflet({
+    leaflet(bqdata %>%
+              dplyr::filter(
+                flow_name == input$radio
+              )) %>%
+      addTiles() %>%
+      addMarkers(lat = ~lat, lng = ~long, popup = paste0("<h4>", bqdata$flow_name,"</h4>", "<img src = ", bqdata$image,' width="55"', ">"))
+  })
+}
+
+
+shinyApp(ui, server)
+
+
