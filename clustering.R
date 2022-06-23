@@ -30,7 +30,10 @@ server <- function(input, output, session) {
         leaflet(bqdata %>%
             dplyr::filter()) %>%
             addTiles() %>%
-            addMarkers(lat = ~lat, lng = ~long, popup = paste0("<h6>", bqdata$flow_name, "</h6>", "<img src = ", bqdata$image, ' width="95"', ">"), clusterOptions = markerClusterOptions())
+            addMarkers(
+                lat = ~lat, lng = ~long,
+                popup = paste0("<h6>", bqdata$flow_name, "</h6>", "<img src = ", bqdata$image, ' width="95"', ">"), clusterOptions = markerClusterOptions()
+            )
     })
 }
 
