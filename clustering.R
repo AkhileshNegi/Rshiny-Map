@@ -21,7 +21,7 @@ tb <- bq_dataset_query(ds,
 bqdata <- bq_table_download(tb)
 
 ui <- fluidPage(
-    titlePanel("My first R shiny app"),
+    titlePanel("Glific Mapping"),
     leafletOutput("mymap")
 )
 
