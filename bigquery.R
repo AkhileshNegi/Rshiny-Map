@@ -18,10 +18,12 @@ tb <- bq_dataset_query(ds,
 )
 bqdata <- bq_table_download(tb)
 
-ui <- fluidPage(
-  titlePanel("Glific Mapping"),
-  leafletOutput("mymap"),
-  radioButtons("radio", h3("Select the Flow name"),
+
+ui <- fillPage(
+    titlePanel("Glific Mapping"),
+    tags$style(type = "text/css", "html, body {width:100%; height:100%}"),
+    leafletOutput("mymap", width = "100%", height = "100%"),
+    radioButtons("radio", h3("Select the Flow name"),
     choices = list(
       "Glific" = "Glific", "testcontact" = "testcontact",
       "locationtrial" = "locationtrial"
