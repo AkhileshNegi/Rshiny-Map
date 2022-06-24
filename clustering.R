@@ -26,14 +26,34 @@ ui <- fillPage(
     leafletOutput("mymap", width = "100%", height = "100%")
 )
 
+logos <- awesomeIconList(
+    "Pothole" = makeAwesomeIcon(
+        icon = "fire",
+        markerColor = "blue",
+        library = "fa"
+    ),
+    "Tree Cover" = makeAwesomeIcon(
+        icon = "tree",
+        markerColor = "green",
+        library = "fa"
+    )
+)
+
+
 server <- function(input, output, session) {
     output$mymap <- renderLeaflet({
         leaflet(bqdata %>%
             dplyr::filter()) %>%
             addTiles() %>%
-            addMarkers(
+            addAwesomeMarkers(
                 lat = ~lat, lng = ~long,
-                popup = paste0("<h6>", bqdata$flow_name, "</h6>", "<img src = ", bqdata$image, ' width="95"', ">"), clusterOptions = markerClusterOptions()
+                icon = ~ logos[flow_name],
+                popup = paste0(
+                    "<h6>", bqdata$flow_name,
+                    "</h6>", "<img src = ",
+                    bqdata$image, ' width="95"', ">"
+                ),
+                clusterOptions = markerClusterOptions()
             )
     })
 }
