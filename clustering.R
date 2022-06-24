@@ -49,9 +49,9 @@ server <- function(input, output, session) {
                 lat = ~lat, lng = ~long,
                 icon = ~ logos[flow_name],
                 popup = paste0(
-                    "<h6>", bqdata$flow_name,
-                    "</h6>", "<img src = ",
-                    bqdata$image, ' width="95"', ">"
+                    "<h4>", bqdata$flow_name, "</h4>",
+                    "<img src = ", bqdata$image, ' width="95"', ">",
+                    "<p> Shared by ", bqdata$name, "</p>"
                 ),
                 clusterOptions = markerClusterOptions()
             )
