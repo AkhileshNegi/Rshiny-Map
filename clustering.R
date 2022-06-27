@@ -50,8 +50,12 @@ server <- function(input, output, session) {
                 icon = ~ logos[flow_name],
                 popup = paste0(
                     "<h4>", bqdata$flow_name, "</h4>",
-                    "<img src = ", bqdata$image, ' width="95"', ">",
-                    "<p> Shared by ", bqdata$name, "</p>"
+                    "<img src = ", bqdata$image,
+                    ' width="100%"  height="100"', ">",
+                    "<p> Shared by ",
+                    bqdata$name, " on ",
+                    bqdata$inserted_at,
+                    "</p>"
                 ),
                 clusterOptions = markerClusterOptions()
             )
