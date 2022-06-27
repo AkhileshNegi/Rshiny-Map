@@ -5,6 +5,7 @@ library(leaflet)
 library(dplyr)
 library(shiny)
 library(bigrquery)
+library(fontawesome)
 
 con <- dbConnect(
     bigrquery::bigquery(),
@@ -20,10 +21,18 @@ tb <- bq_dataset_query(ds,
 )
 bqdata <- bq_table_download(tb)
 
-ui <- fillPage(
-    titlePanel("Glific Mapping"),
-    tags$style(type = "text/css", "html, body {width:100%; height:100%}"),
-    leafletOutput("mymap", width = "100%", height = "100%")
+ui <- bootstrapPage(
+    tags$style(type = "text/css", "html, body {width:100%; height:100%} "),
+    leafletOutput("mymap", height = "50%"),
+    absolutePanel(
+        style = "background: #dddddd; padding: 10px",
+        top = 10, right = 10, draggable = TRUE,
+        radioButtons("flow_name", h3("Select the Flow Name"),
+            choices = list(
+                "Tree" = "Tree", "Pothole" = "Pothole"
+            ), selected = "Tree"
+        )
+    )
 )
 
 logos <- awesomeIconList(
@@ -39,22 +48,24 @@ logos <- awesomeIconList(
     )
 )
 
-
 server <- function(input, output, session) {
     output$mymap <- renderLeaflet({
-        leaflet(bqdata %>%
-            dplyr::filter()) %>%
+        filtered_data <- bqdata %>%
+            dplyr::filter(
+                flow_name == input$flow_name
+            )
+        leaflet(filtered_data) %>%
             addTiles() %>%
             addAwesomeMarkers(
                 lat = ~lat, lng = ~long,
                 icon = ~ logos[flow_name],
                 popup = paste0(
-                    "<h4>", bqdata$flow_name, "</h4>",
-                    "<img src = ", bqdata$image,
+                    "<h4>", filtered_data$flow_name, "</h4>",
+                    "<img src = ", filtered_data$image,
                     ' width="100%"  height="100"', ">",
                     "<p> Shared by ",
-                    bqdata$name, " on ",
-                    bqdata$inserted_at,
+                    filtered_data$name, " on ",
+                    filtered_data$inserted_at,
                     "</p>"
                 ),
                 clusterOptions = markerClusterOptions()
