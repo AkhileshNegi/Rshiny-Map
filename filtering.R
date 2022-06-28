@@ -23,14 +23,14 @@ bqdata <- bq_table_download(tb)
 
 ui <- bootstrapPage(
     tags$style(type = "text/css", "html, body {width:100%; height:100%} "),
-    leafletOutput("mymap", height = "50%"),
+    leafletOutput("mymap", height = "100%"),
     absolutePanel(
         style = "background: #dddddd; padding: 10px",
         top = 10, right = 10, draggable = TRUE,
         radioButtons("flow_name", h3("Select the Flow Name"),
             choices = list(
-                "Tree" = "Tree", "Pothole" = "Pothole"
-            ), selected = "Tree"
+                "All" = "", "Tree" = "Tree", "Pothole" = "Pothole"
+            )
         )
     )
 )
@@ -51,9 +51,11 @@ logos <- awesomeIconList(
 server <- function(input, output, session) {
     output$mymap <- renderLeaflet({
         filtered_data <- bqdata %>%
-            dplyr::filter(
+            dplyr::filter(if (input$flow_name == "") {
+                flow_name != ""
+            } else {
                 flow_name == input$flow_name
-            )
+            })
         leaflet(filtered_data) %>%
             addTiles() %>%
             addAwesomeMarkers(
