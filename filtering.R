@@ -31,6 +31,14 @@ ui <- bootstrapPage(
             choices = list(
                 "All" = "", "Tree" = "Tree", "Pothole" = "Pothole"
             )
+        ),
+        radioButtons("city", h3("Select the City Name"),
+            choices = list(
+                "None" = "",
+                "Gurgaon" = "Gurgaon",
+                "Tehri" = "Tehri",
+                "Rudrapur" = "Rudrapur"
+            )
         )
     )
 )
@@ -55,6 +63,11 @@ server <- function(input, output, session) {
                 flow_name != ""
             } else {
                 flow_name == input$flow_name
+            }) %>%
+            dplyr::filter(if (input$city == "") {
+                location != ""
+            } else {
+                location == input$city
             })
         leaflet(filtered_data) %>%
             addTiles() %>%
