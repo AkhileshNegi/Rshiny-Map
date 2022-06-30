@@ -27,18 +27,13 @@ ui <- bootstrapPage(
     absolutePanel(
         style = "background: #dddddd; padding: 10px",
         top = 10, right = 10, draggable = TRUE,
-        radioButtons("flow_name", h3("Select the Flow Name"),
-            choices = list(
-                "All" = "", "Tree" = "Tree", "Pothole" = "Pothole"
-            )
+        selectInput(
+            "flow_name", "Select the Flow Name:",
+            list("All", "Tree", "Pothole")
         ),
-        radioButtons("city", h3("Select the City Name"),
-            choices = list(
-                "None" = "",
-                "Gurgaon" = "Gurgaon",
-                "Tehri" = "Tehri",
-                "Rudrapur" = "Rudrapur"
-            )
+        selectInput(
+            "city", "Select the City Name:",
+            list("None", "Gurgaon", "Tehri", "Rudrapur")
         )
     )
 )
@@ -59,12 +54,12 @@ logos <- awesomeIconList(
 server <- function(input, output, session) {
     output$mymap <- renderLeaflet({
         filtered_data <- bqdata %>%
-            dplyr::filter(if (input$flow_name == "") {
+            dplyr::filter(if (input$flow_name == "All") {
                 flow_name != ""
             } else {
                 flow_name == input$flow_name
             }) %>%
-            dplyr::filter(if (input$city == "") {
+            dplyr::filter(if (input$city == "None") {
                 location != ""
             } else {
                 location == input$city
@@ -87,6 +82,5 @@ server <- function(input, output, session) {
             )
     })
 }
-
 
 shinyApp(ui, server)
