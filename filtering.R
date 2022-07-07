@@ -20,6 +20,12 @@ tb <- bq_dataset_query(ds,
     billing = "tides-saas-309509"
 )
 bqdata <- bq_table_download(tb)
+cities <- bqdata %>%
+    select(location) %>%
+    distinct()
+flow_names <- bqdata %>%
+    select(flow_name) %>%
+    distinct()
 
 ui <- bootstrapPage(
     tags$style(type = "text/css", "html, body {width:100%; height:100%} "),
@@ -29,11 +35,11 @@ ui <- bootstrapPage(
         top = 10, right = 10, draggable = TRUE,
         selectInput(
             "flow_name", "Select the Flow Name:",
-            list("All", "Tree", "Pothole")
+            append("All", as.list(flow_names$flow_name), )
         ),
         selectInput(
             "city", "Select the City Name:",
-            list("None", "Gurgaon", "Tehri", "Rudrapur")
+            append("None", as.list(cities$location))
         )
     )
 )
